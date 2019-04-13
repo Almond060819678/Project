@@ -6,9 +6,9 @@ from news.models import Article
 from news.serializers import ArticleSerializer
 from news.grabber import NewsGrabber
 from django.http import HttpResponse
-from news.customizing_api.exceptions import InvalidAPIQuery
+from news.API.exceptions import InvalidAPIQuery
 from django.shortcuts import redirect
-from news.customizing_api.ordering_filter import CustomOrderingFilter
+from news.API.ordering_filter import CustomOrderingFilter
 
 
 @api_view(['GET'])

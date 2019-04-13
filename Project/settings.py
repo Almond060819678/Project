@@ -130,7 +130,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'news.customizing_api.pagination.CustomPagination',
+    'DEFAULT_PAGINATION_CLASS': 'news.API.pagination.CustomPagination',
     'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S"
 }
 
