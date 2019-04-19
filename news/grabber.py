@@ -7,9 +7,13 @@ articles_xpath = '//table[@id="hnmain"]//table[@class="itemlist"]//tr[@class="at
 
 class NewsGrabber:
     url = 'https://news.ycombinator.com/'
+    proxies = {
+        'http': 'http://68.183.42.79:3128',
+        'https': 'http://68.183.42.79:3128'
+    }
 
     def grab_articles(self):
-        response = requests.get(self.url)
+        response = requests.get(self.url, proxies=self.proxies)
         tree = html.fromstring(response.text)
         article_elements = tree.xpath(articles_xpath)
         article_dicts = [

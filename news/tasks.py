@@ -1,8 +1,8 @@
 from __future__ import absolute_import, unicode_literals
-from Project.celery import app
+from celery import shared_task
 from .grabber import NewsGrabber
 
 
-@app.task
+@shared_task
 def run_grabber():
     NewsGrabber().grab_articles()
