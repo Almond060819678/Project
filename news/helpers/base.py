@@ -1,39 +1,72 @@
 from abc import ABC
+from contextlib import closing
 
 import requests
 from lxml import html
 
 
 class BaseGrabber(ABC):
-    """Class demonstrating abstraction for basic grabber. Follow grabbing steps,
-    overriding methods if needed
+    """Class demonstrating abstraction for basic grabber.
+    Configuration for your personal grabber instruction:
+    1. Inherit from this base class.
+    2. When initiating your subclass instance, give it the following arguments:
+    url
+    - xpath
+    - model
+    - proxies (optional)
+    Read __init__ method docs for understanding this arguments
+    3. Process method consists of 4 methods (parts):
+    - get_html_tree_from_response
+    - web_elements_from_html
+    - dicts_from_web_elements
+    - dicts_to_instances
+    Complete or override them if required
     """
 
     def __init__(self, url, xpath, model):
         self.url = url
         self.xpath = xpath
         self.model = model
+        self.proxies = None
 
     def process(self):
         """
         Grabbing steps
         """
-        tree = self.get_tree_from_response()
-        web_elements = self.web_elements_from_html(tree)
-        dicts = self.dicts_from_web_elements(web_elements)
-        self.dicts_to_instances(dicts)
+        tree = self.get_html_tree_from_response()
+        if tree is not None:
+            web_elements = self.web_elements_from_html(tree)
+            dicts = self.dicts_from_web_elements(web_elements)
+            self.dicts_to_instances(dicts)
 
-    def get_tree_from_response(self):
-        response = requests.get(self.url)
-        return html.fromstring(response.text)
+    def get_html_tree_from_response(self):
+        try:
+            with closing(requests.get(self.url, stream=True, proxies=self.proxies)) as response:
+                if not self.is_good_response(response):
+                    return None
+                return html.fromstring(response.text)
+        except requests.exceptions.RequestException as e:
+            return None
+
+    @staticmethod
+    def is_good_response(response):
+        """
+        Returns True if the response seems to be HTML, False otherwise.
+        """
+        content_type = response.headers['Content-Type'].lower()
+        return (response.status_code == 200
+                and content_type is not None
+                and content_type.find('html') > -1)
 
     def web_elements_from_html(self, tree):
         return tree.xpath(self.xpath)
 
-    def dicts_from_web_elements(self, elements):
-        dicts = [
-            {"title": element.text_content(), "url": element.xpath('./@href')[0]}
-            for element in elements]
+    @staticmethod
+    def dicts_from_web_elements(elements):
+        """
+        Define here your models fields as keys and how to get values from web elements for given xpath
+        """
+        dicts = [{} for element in elements]
         return dicts
 
     def dicts_to_instances(self, dicts):

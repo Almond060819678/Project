@@ -1,6 +1,3 @@
-import requests
-from lxml import html
-
 from news.helpers.base import BaseGrabber
 
 
@@ -9,6 +6,9 @@ class NewsGrabber(BaseGrabber):
         super().__init__(url, xpath, model)
         self.proxies = proxies
 
-    def get_tree_from_response(self):
-        response = requests.get(self.url, proxies=self.proxies)
-        return html.fromstring(response.text)
+    @staticmethod
+    def dicts_from_web_elements(elements):
+        dicts = [
+            {"title": element.text_content(), "url": element.xpath('./@href')[0]}
+            for element in elements]
+        return dicts

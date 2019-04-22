@@ -122,8 +122,8 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S"
 }
 
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_BROKER_URL = os.getenv("BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("RESULT_BACKEND")
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
@@ -131,6 +131,6 @@ CELERY_TIMEZONE = 'Europe/Moscow'
 CELERY_BEAT_SCHEDULE = {
     'run_news_grabber': {
         'task': 'news.tasks.run_news_grabber',
-        'schedule': crontab(minute='*/30')
+        'schedule': crontab()
     }
 }
