@@ -5,8 +5,8 @@ from news import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('posts/', views.PostsList.as_view(), name='article-list'),
-    path('grab_posts/', views.run_grabber, name='grab-posts'),
+    path('posts/', views.PostsList.as_view(), name='posts-list'),
+    path('grab_posts/', views.run_news_grabber, name='grab-posts'),
     path('', views.redirect_view),
 
 ]
