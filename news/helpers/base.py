@@ -7,20 +7,18 @@ from lxml import html
 
 class BaseGrabber(ABC):
     """Class demonstrating abstraction for basic grabber.
-    Configuration for your personal grabber instruction:
+    instruction for configuring your personal grabber:
     1. Inherit from this base class.
     2. When initiating your subclass instance, give it the following arguments:
-    url
+    - url
     - xpath
     - model
     - proxies (optional)
-    Read __init__ method docs for understanding this arguments
-    3. Process method consists of 4 methods (parts):
+    3. Process method consists of 4 methods (parts). Complete or override them if required:
     - get_html_tree_from_response
     - web_elements_from_html
     - dicts_from_web_elements
     - dicts_to_instances
-    Complete or override them if required
     """
 
     def __init__(self, url, xpath, model):
@@ -45,7 +43,7 @@ class BaseGrabber(ABC):
                 if not self.is_good_response(response):
                     return None
                 return html.fromstring(response.text)
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             return None
 
     @staticmethod
